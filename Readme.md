@@ -57,7 +57,8 @@ module SchoolCollabPlatform::CollabContract {
         let request = borrow_global_mut<CollaborationRequest>(requester_address);
         request.accepted = true;
     }
-}
+    }
+
 📑 Smart Contract Functionality
 create_request(requester: &signer, project_details: String)
 
