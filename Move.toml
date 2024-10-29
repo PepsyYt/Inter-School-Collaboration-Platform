@@ -1,0 +1,17 @@
+[package]
+name = "voting-dapp"
+version = "1.0.0"
+authors = []
+
+[addresses]
+SchoolCollabPlatform = "0xd362e83f88003a664a9aa6c52c5142f14de89377e776bd401ef7386705e4c3a8"
+my_addrx = "0xd362e83f88003a664a9aa6c52c5142f14de89377e776bd401ef7386705e4c3a8"
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]
+
