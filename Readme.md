@@ -58,6 +58,16 @@ module SchoolCollabPlatform::CollabContract {
         request.accepted = true;
     }
     }
+   
+    4.Transaction and transaction ID
+    
+Transaction ID - <'0xb3a9b757a774ef78f794d2752fce7998c87b6ed9a90454ea5270168aab7d1afc'>
+
+
+<img src="https://github.com/PepsyYt/Inter-School-Collaboration-Platform/blob/main/Screenshot%202024-10-29%20192039.png" alt="Sample Image" width="500">
+
+
+
 
 📑 Smart Contract Functionality
 create_request(requester: &signer, project_details: String)
@@ -98,4 +108,5 @@ This project is licensed under the MIT License.
 - **Code blocks** for the smart contract are wrapped in triple backticks (` ```move `) for syntax highlighting.  
 - **Headers** and **lists** make the content more readable and well-structured for a markdown file.  
 - Each section is separated by a horizontal line (`---`) to enhance clarity.  
+
 
