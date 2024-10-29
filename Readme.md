@@ -26,7 +26,7 @@ The **School Collaboration Platform** aims to foster collaborative learning and 
 
 ## ⚙️ **Smart Contract Overview**
 
-```move
+move
 module SchoolCollabPlatform::CollabContract {
 
     use aptos_framework::signer;
@@ -98,4 +98,3 @@ This project is licensed under the MIT License.
 - **Headers** and **lists** make the content more readable and well-structured for a markdown file.  
 - Each section is separated by a horizontal line (`---`) to enhance clarity.  
 
-You can directly paste this into your `README.md`!
