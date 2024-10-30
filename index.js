@@ -18,23 +18,3 @@ connectWalletButton.addEventListener('click', async () => {
     console.error('Failed to connect wallet:', error);
   }
 });
-
-// Optional: Send a transaction using Aptos wallet
-async function sendTransaction() {
-  try {
-    const payload = {
-      type: 'entry_function_payload',
-      function: '0x001::module_name::function_name', // Replace with your Move module details
-      arguments: [], // Add any arguments your function needs
-      type_arguments: []
-    };
-
-    const txn = await window.aptos.signAndSubmitTransaction(payload);
-    console.log('Transaction sent:', txn.hash);
-
-    const txnDetails = await aptosClient.getTransactionByHash(txn.hash);
-    console.log('Transaction status:', txnDetails);
-  } catch (error) {
-    console.error('Transaction failed:', error);
-  }
-}
