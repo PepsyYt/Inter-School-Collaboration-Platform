@@ -1,5 +1,5 @@
 /*
-  Theme Name: CollabCampus - LMS Education HTML Template
+  Theme Name: CollabCampus
   Author: Humayun Ahmed
   Author URL: https://themeforest.net/user/pixelcurve
   Support: humayunahmed82@gmail.com
