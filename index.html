@@ -107,10 +107,13 @@
                                     <span>969699999</span>
                                 </div>
                             </div>
-                            <div class="button float-left">
-                                <!-- Connect Wallet Button -->
-                                <a href="#" id="connectWallet" class="main-btn">Connect Wallet</a>
-                            </div>
+                            <!-- Wallet Connect Button -->
+    <div class="button float-left">
+        <a href="#" id="connectWallet" class="main-btn">Connect Wallet</a>
+    </div>
+
+    <!-- Wallet Address Display -->
+    <div id="walletAddress" style="text-align: center; margin-top: 20px;"></div>
                         </div>
                     </div>
                 </div> <!-- row -->
@@ -137,7 +140,7 @@
                                     <li class="nav-item">
                                         <a href="courses.html">Courses</a>
                                         <ul class="sub-menu">
-                                            <li><a href="courses-singel.html">Course Singel</a></li>
+                                            <li><a href="courses-singel.html">Course Single</a></li>
                                         </ul>
                                     </li>
                                     <li class="nav-item">
@@ -147,12 +150,7 @@
                                             <li><a href="events-singel.html">Event Single</a></li>
                                         </ul>
                                     </li>
-                                    <li class="nav-item">
-                                        <a href="contact.html">Contact</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="contact.html">Contact Us</a></li>
-                                        </ul>
-                                    </li>
+                                    
                                 </ul>
                             </div>
                         </nav> <!-- nav -->
@@ -917,6 +915,8 @@
     <!--====== Map js ======-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC3Ip9iVC0nIxC6V14CKLQ1HZNF_65qEQ"></script>
     <script src="js/map-script.js"></script>
+    <script src="js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script src="index.js" type="module"></script>
     <script type="module">
         import { AptosClient } from 'aptos';
