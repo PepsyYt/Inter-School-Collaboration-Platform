@@ -1,29 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Ensure the Aptos wallet is loaded
-  if (typeof window.aptos === 'undefined') {
-      console.error('Aptos wallet not found. Please install it to continue.');
-      alert("Aptos wallet not found. Please install it to continue.");
+  if (typeof window.petra === 'undefined') {
+      alert('Please install the Petra wallet extension to continue.');
       return;
   }
 
-  // Function to connect to the wallet
+  let orders = [];
+
+  // Connect Wallet
+  document.getElementById('connectWallet').addEventListener('click', connectWallet);
+
   async function connectWallet() {
       try {
-          // Request connection to the wallet
-          const { address } = await window.aptos.connect();
-          console.log("Wallet connected:", address);
-          // Display the wallet address on the page
-          document.getElementById("walletAddress").innerText = `Wallet Address: ${address}`;
+          const { address } = await window.petra.connect();
+          document.getElementById('walletAddress').innerText = `Wallet Address: ${address}`;
       } catch (error) {
-          console.error("Error connecting to the wallet:", error);
+          console.error('Connection error:', error);
+          alert('Failed to connect to wallet. Please try again.');
       }
   }
 
-  // Add event listener to the Connect Wallet button
-  const connectWalletButton = document.getElementById("connectWallet");
-  if (connectWalletButton) {
-      connectWalletButton.addEventListener("click", connectWallet);
-  } else {
-      console.error("Connect Wallet button not found in DOM.");
+  async function purchaseBook(event, bookId, bookPrice) {
+      // Prevent the default action of the link
+      event.preventDefault(); 
+
+      try {
+          const account = await window.petra.connect();
+          const payload = {
+              type: "entry_function_payload",
+              function: `0xd362e83f88003a664a9aa6c52c5142f14de89377e776bd401ef7386705e4c3a8::aptos_bookstore::buy_book`,
+              type_arguments: [],
+              arguments: [bookId, bookPrice]
+          };
+
+          // Use sendTransaction to initiate payment
+          const response = await window.petra.sendTransaction(payload);
+          console.log('Transaction successful!', response);
+          alert('Transaction successful!');
+
+          // Update orders
+          updateOrders(bookId, bookPrice);
+      } catch (error) {
+          console.error('Error processing payment:', error);
+          alert('Error processing payment: ' + error.message);
+      }
+  }
+
+  function updateOrders(bookId, bookPrice) {
+      orders.push({ id: bookId, price: bookPrice });
+      const orderList = document.getElementById('orderList');
+      orderList.innerHTML = ''; // Clear previous orders
+      orders.forEach(order => {
+          orderList.innerHTML += `<p>Book ID: ${order.id}, Price: $${order.price}</p>`;
+      });
   }
 });
