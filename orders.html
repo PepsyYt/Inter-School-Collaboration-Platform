@@ -4,28 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file if any -->
 </head>
 <body>
-    <div class="container">
-        <h1>My Orders</h1>
-        <div id="ordersList"></div>
-    </div>
-    <script>
-        // Retrieve the orders from local storage
-        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    <h1>Your Orders</h1>
+    <div id="ordersContainer"></div>
 
-        // Display the orders
-        const ordersList = document.getElementById('ordersList');
-        if (orders.length === 0) {
-            ordersList.innerHTML = '<p>No orders placed yet.</p>';
-        } else {
-            orders.forEach(order => {
-                const orderItem = document.createElement('div');
-                orderItem.innerHTML = `<h3>${order.title}</h3><p>Price: $${order.price}</p>`;
-                ordersList.appendChild(orderItem);
-            });
+    <script>
+        async function loadOrders() {
+            try {
+                const response = await fetch('http://localhost:3000/api/orders');
+                const orders = await response.json();
+
+                const container = document.getElementById('ordersContainer');
+                container.innerHTML = '';  // Clear existing orders
+
+                orders.forEach(order => {
+                    const orderElement = document.createElement('div');
+                    orderElement.textContent = `Book ID: ${order.bookId}, Price: $${order.bookPrice}, Date: ${new Date(order.date).toLocaleString()}`;
+                    container.appendChild(orderElement);
+                });
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
         }
+
+        // Load orders on page load
+        window.onload = loadOrders;
     </script>
 </body>
 </html>

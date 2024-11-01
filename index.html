@@ -108,9 +108,10 @@
                                 </div>
                             </div>
                             <!-- Wallet Connect Button -->
-    <div class="button float-left">
-        <a href="#" id="connectWallet" class="main-btn">Connect Wallet</a>
-    </div>
+                            <div class="button float-left">
+                                <a href="#" id="connectWallet" class="main-btn">Connect Wallet</a>
+                            </div>
+                            <div id="walletAddress" style="text-align: center; margin-top: 20px;"></div>
 
     <!-- Wallet Address Display -->
     <div id="walletAddress" style="text-align: center; margin-top: 20px;"></div>
@@ -829,6 +830,46 @@
                 console.error('Transaction failed:', error);
             }
         }
+    </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCoHLdAMd032Q5cIa33aEMeJSnxsbVlbjk",
+          authDomain: "collabcampus-e6a9c.firebaseapp.com",
+          projectId: "collabcampus-e6a9c",
+          storageBucket: "collabcampus-e6a9c.firebasestorage.app",
+          messagingSenderId: "719959614014",
+          appId: "1:719959614014:web:304f675676ed64a44ea76f"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+      </script>
+       <script>
+        document.getElementById('connectWallet').addEventListener('click', async () => {
+            if (typeof window.petra === 'undefined') {
+                alert('Petra wallet extension not found.');
+                return;
+            }
+
+            try {
+                const account = await window.petra.connect();
+                if (account) {
+                    document.getElementById('walletAddress').innerText = `Wallet Address: ${account.address}`;
+                    console.log("Wallet connected:", account.address);
+                } else {
+                    console.log("Connection canceled by user");
+                }
+            } catch (error) {
+                console.error("Error connecting to wallet:", error);
+                alert('Failed to connect to wallet.');
+            }
+        });
     </script>
 </body>
 </html>
