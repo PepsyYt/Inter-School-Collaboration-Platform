@@ -18,7 +18,7 @@ async function connectPetraWallet() {
    // Replace with your Aptos contract address
   
   async function purchaseBook(bookId, bookPrice, event) {
-    event.preventDefault(); // Prevent the default anchor behavior
+    //event.preventDefault(); // Prevent the default anchor behavior
     try {
         const account = await window.petra.connect();
         const priceInUnits = bookPrice * Math.pow(10, 8); // Convert to the smallest unit if needed

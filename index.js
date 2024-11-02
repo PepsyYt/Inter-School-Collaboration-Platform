@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Purchase Book and Store Order
-  async function purchaseBook(bookId, bookPrice) {
+  /* async function purchaseBook(bookId, bookPrice) {
+    console.log("this works")
       try {
           // Call the Petra wallet to send transaction
           const transaction = await window.petra.sendTransaction({
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('Error processing payment:', error);
           alert('Error processing payment: ' + error.message);
       }
-  }
+  } */
 
   // Display Orders on the Orders Page
   function loadOrders() {
