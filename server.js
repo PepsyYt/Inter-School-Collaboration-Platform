@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 import express from "express";
 import cors from 'cors'
-
 const url = "mongodb://localhost:27017/";
 const client = new MongoClient(url);
 
