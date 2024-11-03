@@ -41,6 +41,16 @@ app.get("/add-transaction", async (req, res) => {
     }
 });
 
+app.get("/transactions", async (req, res) => {
+    try {
+        const allTransactions = await transactions.find({}).toArray(); // Fetch all transactions
+        res.status(200).send(allTransactions); // Send the transactions back
+    } catch (err) {
+        console.error("Error retrieving transactions:", err);
+        res.status(500).send("Internal server error");
+    }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

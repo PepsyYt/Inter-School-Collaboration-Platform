@@ -903,7 +903,7 @@
                     const account = await window.petra.connect();
                     const priceInUnits = price * Math.pow(10, 8);
 
-                    const contractAddress = "0xd362e83f88003a664a9aa6c52c5142f14de89377e776bd401ef7386705e4c3a8";
+                    const contractAddress = "0x2abb1ab290cb828323bf6da71a3f36011d59cd7aa576474f19dbcae50521e056";
                     // Initiate payment
                     const getAptosWallet = () => {
                         if ('aptos' in window) {
@@ -916,7 +916,7 @@
 
                     // Example Transaction, following an [EntryFunctionPayload](https://github.com/aptos-labs/aptos-core/blob/main/ecosystem/typescript/sdk/src/generated/models/EntryFunctionPayload.ts#L8-L21)
                     const transaction = {
-                        arguments: [contractAddress, walletAddress],
+                        arguments: [contractAddress, '717'],
                         function: '0x1::coin::transfer',
                         type: 'entry_function_payload',
                         type_arguments: ['0x1::aptos_coin::AptosCoin'],
@@ -926,11 +926,7 @@
                         const pendingTransaction = await (window).aptos.signAndSubmitTransaction(transaction);
 
                         // In most cases a dApp will want to wait for the transaction, in these cases you can use the typescript sdk
-                        const client = new AptosClient('https://testnet.aptoslabs.com');
-                        const txn = await client.waitForTransactionWithResult(
-                            pendingTransaction.hash,
-                        );
-
+                        console.log(pendingTransaction)
 
                         fetch(`http://localhost:3000/add-transaction?walletId=${encodeURIComponent(walletAddress)}&item=${encodeURIComponent(bookId)}&price=${encodeURIComponent(price)}`, {
                             method: 'GET',
@@ -975,6 +971,41 @@
                 console.log(error.message)
             }
         }
+
+
+        fetch('http://localhost:3000/transactions', {
+            method: 'GET',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Fetched transactions:", data);
+
+                const ordersList = document.getElementById('orderList');
+                ordersList.innerHTML = '';
+
+                data.forEach(transaction => {
+                    const transactionDiv = document.createElement('div');
+                    transactionDiv.classList.add("order-log");
+
+                    transactionDiv.innerHTML = `
+              <span>Transaction ID: ${transaction._id}</span>
+            <span>Message: Transaction retrieved</span>
+            <span>ItemId: ${transaction.item}</span>
+            <span>Price: ${transaction.price}</span>
+        `;
+
+                    ordersList.appendChild(transactionDiv);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching transactions:", error);
+            });
+
     </script>
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -1019,9 +1050,6 @@
             }
         });
     </script>
-    <div id="loadingSpinner" style="display: none;">
-        <div class="spinner"></div>
-    </div>
 </body>
 
 </html>
