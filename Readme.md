@@ -76,13 +76,18 @@ Transaction ID - <'0xb3a9b757a774ef78f794d2752fce7998c87b6ed9a90454ea5270168aab7
 
 📑 Smart Contract Functionality
 create_request(requester: &signer, project_details: String)
-
 Creates a new collaboration request.
 Stores the requesting school’s address, project details, and marks the request as pending.
 accept_request(accepter: &signer, requester_address: address)
-
 Allows the receiving school to accept a pending request.
 Updates the request status to accepted = true.
+🔗 Transaction Details
+Transaction ID: 0xb3a9b757a774ef78f794d2752fce7998c87b6ed9a90454ea5270168aab7d1afc
+
+
+🌐 Live Server
+Access the platform live at https://inter-school-collaboration-platform.vercel.app/
+
 🔭 Future Scope
 Frontend Interface Integration
 
@@ -90,11 +95,11 @@ Develop a web or mobile interface where schools can browse, propose, and accept 
 Enable real-time notifications for request updates.
 Multi-Party Collaborations
 
-Extend the platform to support multi-school partnerships for larger projects or events.
+Support multi-school partnerships for larger projects or events.
 Token Incentives
 
 Introduce token-based incentives to reward active participants.
-Schools earn tokens upon successful project milestones or collaboration achievements.
+Schools earn tokens upon achieving project milestones or collaboration goals.
 Project Progress Tracking
 
 Add a milestone tracking feature to monitor project phases.
@@ -103,15 +108,7 @@ Global Collaborations
 
 Facilitate cross-border collaborations between international schools using blockchain, reducing trust barriers.
 🎯 Conclusion
-The School Collaboration Platform empowers schools to build secure and decentralized partnerships. It bridges geographical gaps to promote educational growth through collaborative efforts. With planned upgrades, the platform aims to become a key driver in shaping global education by enabling schools to connect, collaborate, and grow—together.
+The School Collaboration Platform empowers schools to build secure and decentralized partnerships. By bridging geographical gaps, it promotes educational growth through collaborative efforts. With planned upgrades, the platform aims to become a key driver in shaping global education by enabling schools to connect, collaborate, and grow—together.
 
 📜 License
 This project is licensed under the MIT License.
-
-### Explanation:
-- **Emojis** add some visual flair to each section.  
-- **Code blocks** for the smart contract are wrapped in triple backticks (` ```move `) for syntax highlighting.  
-- **Headers** and **lists** make the content more readable and well-structured for a markdown file.  
-- Each section is separated by a horizontal line (`---`) to enhance clarity.  
-
-
