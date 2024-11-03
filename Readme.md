@@ -74,21 +74,22 @@ Transaction ID - <'0xb3a9b757a774ef78f794d2752fce7998c87b6ed9a90454ea5270168aab7
 
 
 
-📑 Smart Contract Functionality
+## 📑 **Smart Contract Functionality**
 create_request(requester: &signer, project_details: String)
 Creates a new collaboration request.
 Stores the requesting school’s address, project details, and marks the request as pending.
 accept_request(accepter: &signer, requester_address: address)
 Allows the receiving school to accept a pending request.
 Updates the request status to accepted = true.
-🔗 Transaction Details
+
+## 🔗 Transaction Details
 Transaction ID: 0xb3a9b757a774ef78f794d2752fce7998c87b6ed9a90454ea5270168aab7d1afc
 
 
-🌐 Live Server
+## 🌐 Live Server
 Access the platform live at https://inter-school-collaboration-platform.vercel.app/
 
-🔭 Future Scope
+## 🔭 Future Scope
 Frontend Interface Integration
 
 Develop a web or mobile interface where schools can browse, propose, and accept collaborations.
@@ -107,8 +108,9 @@ Schools can submit periodic reports to ensure smooth execution.
 Global Collaborations
 
 Facilitate cross-border collaborations between international schools using blockchain, reducing trust barriers.
-🎯 Conclusion
+## 🎯 Conclusion
+
 The School Collaboration Platform empowers schools to build secure and decentralized partnerships. By bridging geographical gaps, it promotes educational growth through collaborative efforts. With planned upgrades, the platform aims to become a key driver in shaping global education by enabling schools to connect, collaborate, and grow—together.
 
-📜 License
+## 📜 License
 This project is licensed under the MIT License.
