@@ -4,7 +4,7 @@
 
 ## 🚀 **Vision**
 
-The **School Collaboration Platform** aims to foster collaborative learning and knowledge sharing between educational institutions. By leveraging **blockchain technology**, this platform creates a **decentralized and transparent environment** for schools to propose and accept joint projects. It ensures **trust, accountability, and immutability** of collaboration agreements, empowering schools to engage in meaningful educational partnerships globally.
+The **School Collaboration Platform** aims to foster collaborative learning and knowledge sharing between educational institutions. Leveraging **blockchain technology**, this platform creates a **decentralized and transparent environment** for schools to propose and accept joint projects, ensuring **trust, accountability, and immutability** of collaboration agreements. This enables schools to engage in meaningful educational partnerships globally.
 
 ---
 
@@ -12,15 +12,19 @@ The **School Collaboration Platform** aims to foster collaborative learning and 
 
 ### 1. **Decentralized Collaboration Requests**  
 - Schools can initiate collaboration requests on-chain, ensuring **transparency** and **public verifiability**.
-- The platform stores **project details** and maintains a clear record of pending or accepted requests.
+- Stores **project details** and maintains a clear record of pending or accepted requests.
 
 ### 2. **Immutable Records**  
-- Every request is stored **immutably on the blockchain**, ensuring that agreements remain **tamper-proof**.
+- Every request is stored **immutably on the blockchain**, making agreements **tamper-proof**.
 - Schools can rely on the platform for a **trusted history** of collaborations.
 
 ### 3. **Two-Way Approval Mechanism**  
-- Schools can submit requests, while receiving schools must **explicitly accept** them.
+- Schools can submit requests, and receiving schools must **explicitly accept** them.
 - Ensures **mutual consent** before projects are initiated.
+
+### 4. **Book and Course Purchases via Aptos Wallet**  
+- Schools and individuals can **purchase books and courses** directly on the platform.
+- Integrated with the **Aptos wallet** for secure and convenient transactions.
 
 ---
 
@@ -57,7 +61,8 @@ module SchoolCollabPlatform::CollabContract {
         let request = borrow_global_mut<CollaborationRequest>(requester_address);
         request.accepted = true;
     }
-    }
+}
+
    
     4.Transaction and transaction ID
     
