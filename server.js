@@ -4,6 +4,18 @@ import cors from 'cors'
 const url = "mongodb://localhost:27017/";
 const client = new MongoClient(url);
 
+// Add error handling for MongoDB connection
+client.on('error', (error) => {
+    console.error('MongoDB connection error:', error);
+});
+
+client.on('disconnected', () => {
+    console.log('MongoDB disconnected. Attempting to reconnect...');
+    setTimeout(() => {
+        client.connect();
+    }, 5000);
+});
+
 await client.connect();
 console.log("Connected to MongoDB");
 
@@ -53,4 +65,4 @@ app.get("/transactions", async (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-}); 
+});

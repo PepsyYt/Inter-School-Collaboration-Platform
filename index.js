@@ -197,21 +197,32 @@ function addNewTransaction(transaction) {
 
 function loadTransactions() {
     fetch('http://localhost:3000/transactions')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log("Fetched transactions:", data);
             const ordersList = document.getElementById('orderList');
+            if (!ordersList) {
+                console.error('orderList element not found');
+                return;
+            }
             ordersList.innerHTML = '';
             
             // Sort transactions by date, newest first
             data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
-            // Create a document fragment for better performance
-            const fragment = document.createDocumentFragment();
+            if (data.length === 0) {
+                ordersList.innerHTML = '<div class="order-log">No transactions found</div>';
+                return;
+            }
             
             data.forEach(transaction => {
                 const transactionDiv = document.createElement('div');
-                transactionDiv.classList.add("order-log", "animate__animated", "animate__fadeInDown");
+                transactionDiv.classList.add("order-log");
                 transactionDiv.innerHTML = `
                     <span>Transaction Record</span>
                     <span>ID: ${transaction._id.substring(0, 8)}...</span>
@@ -220,12 +231,41 @@ function loadTransactions() {
                     <span>Date: ${new Date(transaction.createdAt).toLocaleString()}</span>
                     <span>Status: Completed</span>
                 `;
-                fragment.appendChild(transactionDiv);
+                ordersList.appendChild(transactionDiv);
             });
-            
-            ordersList.appendChild(fragment);
         })
         .catch(error => {
             console.error("Error fetching transactions:", error);
+            const ordersList = document.getElementById('orderList');
+            if (ordersList) {
+                ordersList.innerHTML = `<div class="order-log">Error loading transactions: ${error.message}</div>`;
+            }
         });
 }
+
+// Add this function to check server connection
+async function checkServerConnection() {
+    try {
+        const response = await fetch('http://localhost:3000');
+        if (!response.ok) {
+            throw new Error('Server not responding');
+        }
+        console.log('Server connection established');
+        return true;
+    } catch (error) {
+        console.error('Server connection failed:', error);
+        return false;
+    }
+}
+
+// Call this before loading transactions
+checkServerConnection().then(isConnected => {
+    if (isConnected) {
+        loadTransactions();
+    } else {
+        const ordersList = document.getElementById('orderList');
+        if (ordersList) {
+            ordersList.innerHTML = '<div class="order-log">Unable to connect to server</div>';
+        }
+    }
+});
