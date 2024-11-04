@@ -23,7 +23,9 @@ const mongoClient = new MongoClient(uri, {
 });
 
 // Replace with your actual Vercel deployment URL
-const API_URL = 'https://inter-school-collaboration-platform-bhme35ark-pepsyyts-projects.vercel.app/api';
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000/api'
+    : 'https://your-vercel-app.vercel.app/api';
 
 // Connect to both Firebase and MongoDB when the document loads
 document.addEventListener('DOMContentLoaded', async () => {
@@ -100,7 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             body: JSON.stringify({
                 walletId: window.petra.account.address,
                 item: bookId,
-                price: bookPrice
+                price: bookPrice,
+                createdAt: new Date()
             })
         });
         

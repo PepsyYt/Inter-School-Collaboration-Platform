@@ -1,15 +1,11 @@
 {
-  "name": "collab-campus",
+  "name": "inter-school-collaboration-platform",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "mongodb": "^4.1.0",
     "cors": "^2.8.5",
