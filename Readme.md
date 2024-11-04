@@ -28,7 +28,7 @@ The **School Collaboration Platform** aims to foster collaborative learning and 
 
 ---
 
-## Video of **Successful Execution**
+## 🎥 Video of **Successful Execution**
 https://drive.google.com/drive/folders/1XgP3kkluXh24DO9ZjVT3JYXHtMgfE6Kl?usp=sharing
 
 ## ⚙️ **Smart Contract Overview**
