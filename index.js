@@ -47,15 +47,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('connectWallet').addEventListener('click', connectWallet);
 
   async function connectWallet() {
+    const walletDisplay = document.getElementById("walletAddress");
+    const connectButton = document.getElementById("connectWallet");
+    
     try {
         const account = await window.petra.connect();
         if (account) {
-            document.getElementById("walletAddress").innerText = `Wallet Address: ${account.address}`;
-            console.log("Wallet connected:", account.address);
+            // Update wallet address display
+            walletDisplay.innerHTML = `
+                <span style="color: #28a745;">✓ Wallet Connected</span>
+                <br>
+                <small style="color: #666; font-size: 12px;">
+                    ${account.address.substring(0, 6)}...${account.address.substring(account.address.length - 4)}
+                </small>
+            `;
+            walletDisplay.classList.add('connected');
+            
+            // Update button text and style
+            connectButton.innerHTML = "Wallet Connected";
+            connectButton.style.backgroundColor = "#07294d";
+            connectButton.style.color = "#ffc600";
+            connectButton.style.borderColor = "#07294d";
+            
+            // Store wallet address in localStorage
+            localStorage.setItem("walletId", account.address);
+            console.log("Wallet connected and saved:", account.address);
         } else {
-            console.log("Connection canceled by user");
+            walletDisplay.textContent = "Not Connected";
+            walletDisplay.classList.remove('connected');
+            connectButton.innerHTML = "Connect Wallet";
         }
     } catch (error) {
+        walletDisplay.textContent = "Connection Failed";
+        walletDisplay.style.color = "#dc3545";
+        connectButton.innerHTML = "Connect Wallet";
         console.error("Error connecting to wallet:", error);
     }
 }

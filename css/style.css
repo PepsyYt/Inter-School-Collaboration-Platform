@@ -3877,7 +3877,15 @@ p.form-message.error {
     font-size: 14px;
     line-height: 1.5;
 }
+.wallet-status {
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
 
+.wallet-status.connected {
+    color: #28a745;
+    font-weight: bold;
+}
 .order-log span:first-child {
     font-weight: bold;
     color: #ffc600;
@@ -3929,3 +3937,12 @@ p.form-message.error {
 
 
 
+.wallet-status {
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.wallet-status.connected {
+    color: #28a745;
+    font-weight: bold;
+}
