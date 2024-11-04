@@ -90,11 +90,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 }
 
+// Transaction display functions
+function displayTransaction(transaction) {
+    const ordersList = document.getElementById('orderList');
+    if (!ordersList) return;
 
-  // Purchase Book and Store Order
-  async function purchaseBook(bookId, bookPrice) {
+    const transactionDiv = document.createElement('div');
+    transactionDiv.classList.add("order-log");
+    transactionDiv.innerHTML = `
+        <span>Transaction Record</span>
+        <span>Item: ${transaction.item}</span>
+        <span>Amount: $${transaction.price}</span>
+        <span>Date: ${new Date(transaction.createdAt).toLocaleString()}</span>
+        <span>Status: Completed</span>
+    `;
+    
+    // Add new transactions at the top
+    ordersList.insertBefore(transactionDiv, ordersList.firstChild);
+}
+
+function loadTransactions() {
+    console.log('Loading transactions...');
+    fetch('http://localhost:3000/transactions')
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(transactions => {
+            console.log('Received transactions:', transactions);
+            const ordersList = document.getElementById('orderList');
+            if (!ordersList) {
+                console.error('orderList element not found');
+                return;
+            }
+            ordersList.innerHTML = '';
+            
+            // Sort transactions by date (newest first)
+            transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if (transactions.length === 0) {
+                ordersList.innerHTML = '<div class="order-log">No transactions found</div>';
+                return;
+            }
+            
+            transactions.forEach(transaction => {
+                displayTransaction(transaction);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading transactions:', error);
+            const ordersList = document.getElementById('orderList');
+            if (ordersList) {
+                ordersList.innerHTML = `<div class="order-log">Error loading transactions: ${error.message}</div>`;
+            }
+        });
+}
+
+// Update purchaseBook function to refresh transactions after purchase
+async function purchaseBook(bookId, bookPrice) {
     try {
-        const response = await fetch(`${API_URL}/transactions`, {
+        const response = await fetch('http://localhost:3000/transactions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -106,22 +161,30 @@ document.addEventListener('DOMContentLoaded', async () => {
                 createdAt: new Date()
             })
         });
-        
+
         if (!response.ok) {
             throw new Error('Transaction failed');
         }
-        
+
         const data = await response.json();
         console.log('Transaction saved:', data);
         
-        // Update UI
-        loadOrders();
-        
+        // Reload transactions immediately after successful purchase
+        loadTransactions();
+
     } catch (error) {
         console.error('Error processing payment:', error);
         alert('Error processing payment: ' + error.message);
     }
 }
+
+// Load transactions when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Page loaded, fetching transactions...');
+    loadTransactions();
+    // Refresh transactions every 30 seconds
+    setInterval(loadTransactions, 30000);
+});
 
   // Display Orders on the Orders Page
   function loadOrders() {
@@ -201,54 +264,6 @@ function addNewTransaction(transaction) {
         top: 0,
         behavior: 'smooth'
     });
-}
-
-function loadTransactions() {
-    fetch('http://localhost:3000/transactions')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Fetched transactions:", data);
-            const ordersList = document.getElementById('orderList');
-            if (!ordersList) {
-                console.error('orderList element not found');
-                return;
-            }
-            ordersList.innerHTML = '';
-            
-            // Sort transactions by date, newest first
-            data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            if (data.length === 0) {
-                ordersList.innerHTML = '<div class="order-log">No transactions found</div>';
-                return;
-            }
-            
-            data.forEach(transaction => {
-                const transactionDiv = document.createElement('div');
-                transactionDiv.classList.add("order-log");
-                transactionDiv.innerHTML = `
-                    <span>Transaction Record</span>
-                    <span>ID: ${transaction._id.substring(0, 8)}...</span>
-                    <span>Item: ${transaction.item}</span>
-                    <span>Amount: $${transaction.price}</span>
-                    <span>Date: ${new Date(transaction.createdAt).toLocaleString()}</span>
-                    <span>Status: Completed</span>
-                `;
-                ordersList.appendChild(transactionDiv);
-            });
-        })
-        .catch(error => {
-            console.error("Error fetching transactions:", error);
-            const ordersList = document.getElementById('orderList');
-            if (ordersList) {
-                ordersList.innerHTML = `<div class="order-log">Error loading transactions: ${error.message}</div>`;
-            }
-        });
 }
 
 // Add this function to check server connection

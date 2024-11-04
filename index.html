@@ -60,15 +60,28 @@
             padding: 20px;
             border-radius: 10px;
             background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
         }
 
         .order-log {
             background: white;
-            padding: 20px;
-            margin-bottom: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Custom scrollbar styling */
@@ -451,9 +464,9 @@
             <div class="section-title pb-30">
                 <h5>Recent Transactions</h5>
             </div>
-            <div class="transaction-list-container">
+            <div class="transaction-list-container" style="margin: 20px;">
                 <div id="orderList" class="transaction-list">
-                    <!-- Orders will be dynamically inserted here -->
+                    <!-- Transactions will be loaded here -->
                 </div>
             </div>
         </div>
