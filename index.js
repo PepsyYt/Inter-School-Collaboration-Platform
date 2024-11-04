@@ -1,4 +1,4 @@
-// Firebase configuration
+// Firebase and MongoDB configurations
 const firebaseConfig = {
   apiKey: "AIzaSyCoHLdAMd032Q5cIa33aEMeJSnxsbVlbjk",
   authDomain: "collabcampus-e6a9c.firebaseapp.com",
@@ -11,13 +11,34 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Reference to Firestore
-const db = firebase.firestore();
+// MongoDB Connection
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://siddharth20042004:1UqMFPcNNugsQx2g@interschool.2yn66.mongodb.net/?retryWrites=true&w=majority&appName=interschool";
+const mongoClient = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof window.petra === 'undefined') {
+// Connect to both Firebase and MongoDB when the document loads
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // Check for Petra wallet
+    if (typeof window.petra === 'undefined') {
       alert('Please install the Petra wallet extension to continue.');
       return;
+    }
+
+    // Connect to MongoDB
+    await mongoClient.connect();
+    console.log("Connected to MongoDB!");
+
+    // Connect Wallet button event listener
+    document.getElementById('connectWallet').addEventListener('click', connectWallet);
+  } catch (error) {
+    console.error("Error during initialization:", error);
   }
 
   let orders = [];
@@ -41,30 +62,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Purchase Book and Store Order
-  /* async function purchaseBook(bookId, bookPrice) {
-    console.log("this works")
-      try {
-          // Call the Petra wallet to send transaction
-          const transaction = await window.petra.sendTransaction({
-              to: contractAddress,
-              amount: bookPrice,
-              data: bookId
-          });
+  async function purchaseBook(bookId, bookPrice) {
+    try {
+      // Petra wallet transaction
+      const transaction = await window.petra.sendTransaction({
+        to: contractAddress,
+        amount: bookPrice,
+        data: bookId
+      });
 
-          // Add order to Firestore
-          const orderData = {
-              bookId,
-              bookPrice,
-              walletAddress: window.petra.account.address,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          };
-          await db.collection('orders').add(orderData);
-          alert('Purchase successful! Your order has been recorded.');
-      } catch (error) {
-          console.error('Error processing payment:', error);
-          alert('Error processing payment: ' + error.message);
-      }
-  } */
+      // Store in Firebase
+      const orderData = {
+        bookId,
+        bookPrice,
+        walletAddress: window.petra.account.address,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      await db.collection('orders').add(orderData);
+
+      // Store in MongoDB
+      const mongoDb = mongoClient.db("spare");
+      const transactions = mongoDb.collection("transactions");
+      await transactions.insertOne({
+        walletId: window.petra.account.address,
+        item: bookId,
+        price: bookPrice,
+        createdAt: new Date()
+      });
+
+      alert('Purchase successful! Your order has been recorded.');
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert('Error processing payment: ' + error.message);
+    }
+  }
 
   // Display Orders on the Orders Page
   function loadOrders() {
@@ -98,5 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load orders if on the Orders page
   if (document.getElementById('ordersContainer')) {
       loadOrders();
+  }
+});
+
+// Add this to index.js
+window.addEventListener('beforeunload', async () => {
+  try {
+    await mongoClient.close();
+    console.log("MongoDB connection closed");
+  } catch (error) {
+    console.error("Error closing MongoDB connection:", error);
   }
 });
