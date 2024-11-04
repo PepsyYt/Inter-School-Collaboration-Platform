@@ -1,68 +1,94 @@
-import { MongoClient } from "mongodb";
-import express from "express";
-import cors from 'cors'
-const url = "mongodb://localhost:27017/";
-const client = new MongoClient(url);
-
-// Add error handling for MongoDB connection
-client.on('error', (error) => {
-    console.error('MongoDB connection error:', error);
-});
-
-client.on('disconnected', () => {
-    console.log('MongoDB disconnected. Attempting to reconnect...');
-    setTimeout(() => {
-        client.connect();
-    }, 5000);
-});
-
-await client.connect();
-console.log("Connected to MongoDB");
-
-const db = client.db("spare");
-const transactions = db.collection("transactions");
+const express = require('express');
+const cors = require('cors');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+require('dotenv').config();
 
 const app = express();
-app.use(cors())
+let cachedDb = null;
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("lol");
+// MongoDB Connection
+async function connectToDatabase() {
+    if (cachedDb) {
+        return cachedDb;
+    }
+    
+    const client = await MongoClient.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+
+    // Add error handling for MongoDB connection
+    client.on('error', (error) => {
+        console.error('MongoDB connection error:', error);
+    });
+
+    client.on('disconnected', () => {
+        console.log('MongoDB disconnected. Attempting to reconnect...');
+        setTimeout(() => {
+            client.connect();
+        }, 5000);
+    });
+
+    const db = client.db('your_database_name');
+    cachedDb = db;
+    return db;
+}
+
+// API Routes
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok' });
 });
 
-app.get("/add-transaction", async (req, res) => {
-    const { walletId, item, price } = req.query;
-
-    if (!walletId || !item || !price) {
-        return res.status(400).send("walletId and item are required");
-    }
-
+app.post('/api/transactions', async (req, res) => {
     try {
-        const newTransaction = {
+        const db = await connectToDatabase();
+        const { walletId, item, price } = req.body;
+        
+        const result = await db.collection('transactions').insertOne({
             walletId,
             item,
             price,
             createdAt: new Date()
-        };
-        const result = await transactions.insertOne(newTransaction);
-        res.status(201).send({ message: "Transaction saved", transactionId: result.insertedId, price, item });
-    } catch (err) {
-        console.error("Error saving transaction:", err);
-        res.status(500).send("Internal server error");
+        });
+        
+        res.json({ success: true, transactionId: result.insertedId });
+    } catch (error) {
+        console.error('Transaction error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-app.get("/transactions", async (req, res) => {
+app.get('/api/transactions', async (req, res) => {
     try {
-        const allTransactions = await transactions.find({}).toArray(); // Fetch all transactions
-        res.status(200).send(allTransactions); // Send the transactions back
-    } catch (err) {
-        console.error("Error retrieving transactions:", err);
-        res.status(500).send("Internal server error");
+        const db = await connectToDatabase();
+        const transactions = await db.collection('transactions')
+            .find()
+            .sort({ createdAt: -1 })
+            .toArray();
+        
+        res.json(transactions);
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        res.status(500).json({ error: error.message });
     }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Export for Vercel
+module.exports = app;
+
+// Start server if not in Vercel
+if (process.env.NODE_ENV !== 'production') {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}

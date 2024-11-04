@@ -22,6 +22,9 @@ const mongoClient = new MongoClient(uri, {
   }
 });
 
+// Replace with your actual Vercel deployment URL
+const API_URL = 'https://inter-school-collaboration-platform-bhme35ark-pepsyyts-projects.vercel.app/api';
+
 // Connect to both Firebase and MongoDB when the document loads
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -89,58 +92,60 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Purchase Book and Store Order
   async function purchaseBook(bookId, bookPrice) {
     try {
-      // Petra wallet transaction
-      const transaction = await window.petra.sendTransaction({
-        to: contractAddress,
-        amount: bookPrice,
-        data: bookId
-      });
-
-      // Store in Firebase
-      const orderData = {
-        bookId,
-        bookPrice,
-        walletAddress: window.petra.account.address,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      };
-      await db.collection('orders').add(orderData);
-
-      // Store in MongoDB
-      const mongoDb = mongoClient.db("spare");
-      const transactions = mongoDb.collection("transactions");
-      await transactions.insertOne({
-        walletId: window.petra.account.address,
-        item: bookId,
-        price: bookPrice,
-        createdAt: new Date()
-      });
-
-      alert('Purchase successful! Your order has been recorded.');
+        const response = await fetch(`${API_URL}/transactions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                walletId: window.petra.account.address,
+                item: bookId,
+                price: bookPrice
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Transaction failed');
+        }
+        
+        const data = await response.json();
+        console.log('Transaction saved:', data);
+        
+        // Update UI
+        loadOrders();
+        
     } catch (error) {
-      console.error('Error processing payment:', error);
-      alert('Error processing payment: ' + error.message);
+        console.error('Error processing payment:', error);
+        alert('Error processing payment: ' + error.message);
     }
-  }
+}
 
   // Display Orders on the Orders Page
   function loadOrders() {
-      const ordersContainer = document.getElementById('ordersContainer');
-      ordersContainer.innerHTML = '';
-
-      db.collection('orders').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
-          snapshot.forEach((doc) => {
-              const order = doc.data();
-              const orderItem = document.createElement('div');
-              orderItem.innerHTML = `
-                  <p>Book ID: ${order.bookId}</p>
-                  <p>Price: $${order.bookPrice}</p>
-                  <p>Wallet Address: ${order.walletAddress}</p>
-                  <p>Timestamp: ${order.timestamp.toDate()}</p>
-              `;
-              ordersContainer.appendChild(orderItem);
-          });
-      });
-  }
+    fetch(`${API_URL}/transactions`)
+        .then(response => response.json())
+        .then(data => {
+            const ordersList = document.getElementById('orderList');
+            ordersList.innerHTML = '';
+            
+            data.forEach(transaction => {
+                const transactionDiv = document.createElement('div');
+                transactionDiv.classList.add("order-log");
+                transactionDiv.innerHTML = `
+                    <span>Transaction Record</span>
+                    <span>ID: ${transaction._id}</span>
+                    <span>Item: ${transaction.item}</span>
+                    <span>Amount: $${transaction.price}</span>
+                    <span>Date: ${new Date(transaction.createdAt).toLocaleString()}</span>
+                    <span>Status: Completed</span>
+                `;
+                ordersList.insertBefore(transactionDiv, ordersList.firstChild);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching transactions:', error);
+        });
+}
 
   // Add event listener to purchase buttons
   document.querySelectorAll('.purchaseButton').forEach(button => {
