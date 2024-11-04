@@ -3841,7 +3841,87 @@ p.form-message.error {
 .transaction-status.error {
     border-left: 4px solid #dc3545;
 }
+.transaction-list {
+    max-width: 800px;
+    margin: 0 auto;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+}
 
+.order-log {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    animation: slideInDown 0.5s ease-out;
+}
+
+.order-log:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.order-log span {
+    display: block;
+    color: #07294d;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.order-log span:first-child {
+    font-weight: bold;
+    color: #ffc600;
+}
+
+.transaction-status {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Custom scrollbar styling */
+.transaction-list::-webkit-scrollbar {
+    width: 8px;
+}
+.transaction-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.transaction-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+.transaction-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 
 

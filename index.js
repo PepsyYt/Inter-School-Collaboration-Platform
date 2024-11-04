@@ -141,3 +141,66 @@ window.addEventListener('beforeunload', async () => {
     console.error("Error closing MongoDB connection:", error);
   }
 });
+
+function addNewTransaction(transaction) {
+    const ordersList = document.getElementById('orderList');
+    const transactionDiv = document.createElement('div');
+    transactionDiv.classList.add("order-log", "animate__animated", "animate__fadeInDown");
+    
+    transactionDiv.innerHTML = `
+        <span>Transaction Record</span>
+        <span>ID: ${transaction._id.substring(0, 8)}...</span>
+        <span>Item: ${transaction.item}</span>
+        <span>Amount: $${transaction.price}</span>
+        <span>Date: ${new Date(transaction.createdAt).toLocaleString()}</span>
+        <span>Status: Completed</span>
+    `;
+    
+    // Insert at the beginning of the list
+    if (ordersList.firstChild) {
+        ordersList.insertBefore(transactionDiv, ordersList.firstChild);
+    } else {
+        ordersList.appendChild(transactionDiv);
+    }
+
+    // Smooth scroll to top
+    ordersList.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function loadTransactions() {
+    fetch('http://localhost:3000/transactions')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched transactions:", data);
+            const ordersList = document.getElementById('orderList');
+            ordersList.innerHTML = '';
+            
+            // Sort transactions by date, newest first
+            data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            // Create a document fragment for better performance
+            const fragment = document.createDocumentFragment();
+            
+            data.forEach(transaction => {
+                const transactionDiv = document.createElement('div');
+                transactionDiv.classList.add("order-log", "animate__animated", "animate__fadeInDown");
+                transactionDiv.innerHTML = `
+                    <span>Transaction Record</span>
+                    <span>ID: ${transaction._id.substring(0, 8)}...</span>
+                    <span>Item: ${transaction.item}</span>
+                    <span>Amount: $${transaction.price}</span>
+                    <span>Date: ${new Date(transaction.createdAt).toLocaleString()}</span>
+                    <span>Status: Completed</span>
+                `;
+                fragment.appendChild(transactionDiv);
+            });
+            
+            ordersList.appendChild(fragment);
+        })
+        .catch(error => {
+            console.error("Error fetching transactions:", error);
+        });
+}
